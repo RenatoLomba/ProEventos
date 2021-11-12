@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -8,7 +9,13 @@ import { Component, OnInit } from '@angular/core';
 export class NavComponent implements OnInit {
   public isCollapsed = true;
 
-  constructor() {}
+  constructor(private readonly router: Router) {}
 
   ngOnInit() {}
+
+  showMenu(): boolean {
+    const currUrl = this.router.url;
+    console.log(currUrl);
+    return currUrl !== '/user/login';
+  }
 }
