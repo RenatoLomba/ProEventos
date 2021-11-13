@@ -15,7 +15,6 @@ export class NavComponent implements OnInit {
 
   showMenu(): boolean {
     const currUrl = this.router.url;
-    console.log(currUrl);
     return currUrl !== '/user/login';
   }
 }

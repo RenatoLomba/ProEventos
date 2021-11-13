@@ -1,6 +1,6 @@
-import { Batch } from "./Batch";
-import { SocialNetwork } from "./SocialNetwork";
-import { SpeakerEvent } from "./SpeakerEvent";
+import { Batch } from './Batch';
+import { SocialNetwork } from './SocialNetwork';
+import { SpeakerEvent } from './SpeakerEvent';
 
 export interface Event {
   id: number;
