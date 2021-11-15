@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProEventos.Application.Contracts;
+using ProEventos.Application.Dtos;
 using ProEventos.Domain;
 
 namespace ProEventos.API.Controllers
@@ -22,7 +23,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                Event[] evnts = null;
+                EventDto[] evnts = null;
 
                 if (!String.IsNullOrEmpty(theme))
                 {
@@ -33,7 +34,7 @@ namespace ProEventos.API.Controllers
                     evnts = await this._eventService.GetEvents(true);
                 }
 
-                if (evnts == null) return NotFound("No Event Found.");
+                if (evnts == null) return NoContent();
 
                 return Ok(evnts);
             }
@@ -50,7 +51,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var evnt = await this._eventService.GetEventById(id, true);
-                if (evnt == null) return NotFound("Event Not Found.");
+                if (evnt == null) return NoContent();
 
                 return Ok(evnt);
             }
@@ -62,12 +63,12 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Event model)
+        public async Task<IActionResult> Post(EventDto model)
         {
             try
             {
                 var evnt = await this._eventService.AddEvent(model);
-                if (evnt == null) return BadRequest("Event Not Created.");
+                if (evnt == null) return NoContent();
 
                 return Ok(evnt);
             }
@@ -79,12 +80,12 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Event model)
+        public async Task<IActionResult> Put(int id, [FromBody] EventDto model)
         {
             try
             {
                 var evnt = await this._eventService.UpdateEvent(id, model);
-                if (evnt == null) return BadRequest("Event Not Updated.");
+                if (evnt == null) return NoContent();
 
                 return Ok(evnt);
             }
@@ -106,6 +107,11 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
+                if (ex.Message == "Event Not Found")
+                {
+                    return NoContent();
+                }
+
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     ex.Message);
             }

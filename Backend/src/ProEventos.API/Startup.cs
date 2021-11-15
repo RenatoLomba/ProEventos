@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ProEventos.API.Config;
+using ProEventos.Application.Helpers;
 using ProEventos.Persistence.Contexts;
 
 namespace ProEventos.API
@@ -29,6 +31,14 @@ namespace ProEventos.API
                 .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling =
                     Newtonsoft.Json.ReferenceLoopHandling.Ignore
                 );
+
+            // var config = new AutoMapper.MapperConfiguration(cfg => 
+            //     Mappers.ConfigMappers(cfg));
+
+            // IMapper mapper = config.CreateMapper();
+
+            services.AddSingleton(new MapperConfiguration(cfg =>
+                Mappers.ConfigMappers(cfg)).CreateMapper());
 
             DependencyInjection.InjectPersistences(services);
             DependencyInjection.InjectServices(services);
