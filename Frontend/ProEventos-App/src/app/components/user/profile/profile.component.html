@@ -46,7 +46,7 @@
           <div class="form-group col">
             <label>Título</label>
             <select formControlName="title"
-              [ngClass]="{'is-invalid': controls.title?.errors && controls.title?.touched}"
+              [ngClass]="cssValidator(controls.title)"
               class="form-control">
               <option value=""></option>
               <option value="0">Não Quero</option>
@@ -67,7 +67,7 @@
             <input
               type="text"
               formControlName="firstName"
-              [ngClass]="{'is-invalid': controls.firstName?.errors && controls.firstName?.touched}"
+              [ngClass]="cssValidator(controls.firstName)"
               class="form-control"/>
             <div *ngIf="controls.firstName?.errors?.required" class="invalid-feedback">
               Primeiro Nome é obrigatório.
@@ -78,7 +78,7 @@
             <input
               type="text"
               formControlName="lastName"
-              [ngClass]="{'is-invalid': controls.lastName?.errors && controls.lastName?.touched}"
+              [ngClass]="cssValidator(controls.lastName)"
               class="form-control"/>
             <div *ngIf="controls.lastName?.errors?.required" class="invalid-feedback">
               Último Nome é obrigatório.
@@ -92,7 +92,7 @@
             <input
               type="text"
               formControlName="email"
-              [ngClass]="{'is-invalid': controls.email?.errors && controls.email?.touched}"
+              [ngClass]="cssValidator(controls.email)"
               class="form-control" />
             <div *ngIf="controls.email?.errors?.required" class="invalid-feedback">
               E-mail é obrigatório.
@@ -106,7 +106,7 @@
             <input
               type="text"
               formControlName="phone"
-              [ngClass]="{'is-invalid': controls.phone?.errors && controls.phone?.touched}"
+              [ngClass]="cssValidator(controls.phone)"
               class="form-control" />
             <div *ngIf="controls.phone?.errors?.required" class="invalid-feedback">
               Telefone é obrigatório.
@@ -115,7 +115,7 @@
           <div class="form-group col-sm">
             <label>Função</label>
             <select formControlName="function"
-              [ngClass]="{'is-invalid': controls.function?.errors && controls.function?.touched}"
+              [ngClass]="cssValidator(controls.function)"
               class="form-control">
               <option value=""></option>
               <option value="Participante">Participante</option>
@@ -130,7 +130,7 @@
             <input
               type="text"
               formControlName="description"
-              [ngClass]="{'is-invalid': controls.description?.errors && controls.description?.touched}"
+              [ngClass]="cssValidator(controls.description)"
               class="form-control" />
             <div *ngIf="controls.description?.errors?.required" class="invalid-feedback">
               Descrição é obrigatório.
@@ -147,7 +147,7 @@
             <input
               type="password"
               formControlName="password"
-              [ngClass]="{'is-invalid': controls.password?.errors && controls.password?.touched}"
+              [ngClass]="cssValidator(controls.password)"
               class="form-control" />
             <div *ngIf="controls.password?.errors?.required" class="invalid-feedback">
               Senha é obrigatório.
@@ -161,7 +161,7 @@
             <input
               type="password"
               formControlName="confirmPassword"
-              [ngClass]="{'is-invalid': controls.confirmPassword?.errors && controls.confirmPassword?.touched}"
+              [ngClass]="cssValidator(controls.confirmPassword)"
               class="form-control" />
             <div *ngIf="controls.confirmPassword?.errors?.required" class="invalid-feedback">
               Confirmar Senha é obrigatório.

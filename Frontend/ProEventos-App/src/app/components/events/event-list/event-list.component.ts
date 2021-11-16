@@ -21,6 +21,7 @@ export class EventListComponent implements OnInit {
   marginImg = 2;
   showImg = true;
   modalRef?: BsModalRef;
+  eventId?: number;
 
   get eventsFilter() {
     return this._eventsFilter;
@@ -35,7 +36,7 @@ export class EventListComponent implements OnInit {
     private readonly eventService: EventService,
     private readonly modalService: BsModalService,
     private readonly toastrService: ToastrService,
-    private readonly spinnerService: NgxSpinnerService,
+    private readonly spinner: NgxSpinnerService,
     private readonly router: Router,
   ) {}
 
@@ -44,7 +45,7 @@ export class EventListComponent implements OnInit {
   }
 
   getEvents(): void {
-    this.spinnerService.show();
+    this.spinner.show();
     this.eventService.getEvents().subscribe({
       next: (events) => {
         this._events = events;
@@ -52,10 +53,10 @@ export class EventListComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        this.spinnerService.hide();
+        this.spinner.hide();
         this.toastrService.error('Erro ao carregar eventos.', 'Erro');
       },
-      complete: () => this.spinnerService.hide(),
+      complete: () => this.spinner.hide(),
     });
   }
 
@@ -77,13 +78,34 @@ export class EventListComponent implements OnInit {
     this.router.navigate([`/events/detail/${id}`]);
   }
 
-  openModal(template: TemplateRef<any>): void {
+  openModal(event: any, template: TemplateRef<any>, eventId: number): void {
+    event.stopPropagation();
+    this.eventId = eventId;
     this.modalRef = this.modalService.show(template, { class: 'modal-md' });
   }
 
   confirm(): void {
     this.modalRef?.hide();
-    this.toastrService.success('O Evento foi deletado.', 'Sucesso!');
+    this.spinner.show();
+
+    this.eventService
+      .deleteEvent(this.eventId as number)
+      .subscribe(
+        (res) => {
+          if (res) {
+            this.toastrService.success(
+              `O Evento ${this.eventId} foi deletado.`,
+              'Sucesso!',
+            );
+            this.getEvents();
+          }
+        },
+        (error: any) => {
+          console.log(error);
+          this.toastrService.error(`Detalhes: ${error.message}`, 'Erro!');
+        },
+      )
+      .add(() => this.spinner.hide());
   }
 
   decline(): void {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   AbstractControlOptions,
   FormBuilder,
+  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
@@ -15,7 +16,7 @@ import { ValidatorField } from 'src/app/helpers/validator-field';
 export class ProfileComponent implements OnInit {
   form!: FormGroup;
 
-  get controls() {
+  get controls(): any {
     return this.form?.controls;
   }
 
@@ -55,5 +56,9 @@ export class ProfileComponent implements OnInit {
   resetForm(event: any) {
     event.preventDefault();
     this.form?.reset();
+  }
+
+  cssValidator(control: FormControl) {
+    return { 'is-invalid': control?.errors && control?.touched };
   }
 }

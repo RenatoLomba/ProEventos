@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   AbstractControlOptions,
   FormBuilder,
+  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
@@ -41,5 +42,9 @@ export class RegisterComponent implements OnInit {
       },
       formOptions,
     );
+  }
+
+  cssValidator(control: FormControl) {
+    return { 'is-invalid': control?.errors && control?.touched };
   }
 }

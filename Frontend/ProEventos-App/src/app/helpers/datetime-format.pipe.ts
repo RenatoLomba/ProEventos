@@ -7,6 +7,10 @@ import { Constants } from '../utils/constants';
 })
 export class DateTimeFormatPipe extends DatePipe implements PipeTransform {
   transform(value: any): any {
-    return super.transform(value, Constants.DATE_TIME_FMT);
+    const [date, time] = String(value).split(' ');
+    const [day, month, year] = date.split('/');
+    const [hour, minute, seconds] = time.split(':');
+    const dateString = `${month}/${day}/${year} ${hour}:${minute}:${seconds}`;
+    return super.transform(dateString, Constants.DATE_TIME_FMT);
   }
 }

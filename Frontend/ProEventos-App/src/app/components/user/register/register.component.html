@@ -24,7 +24,7 @@
             class="form-control"
             placeholder="Insira o Primeiro nome"
             formControlName="firstName"
-            [ngClass]="{'is-invalid': controls.firstName?.errors && controls.firstName?.touched}" />
+            [ngClass]="cssValidator(controls.firstName)" />
           <div *ngIf="controls.firstName?.errors?.required" class="invalid-feedback">
             Primeiro Nome é obrigatório.
           </div>
@@ -36,7 +36,7 @@
             class="form-control"
             placeholder="Insira o Último nome"
             formControlName="lastName"
-            [ngClass]="{'is-invalid': controls.lastName?.errors && controls.lastName?.touched}" />
+            [ngClass]="cssValidator(controls.lastName)" />
           <div *ngIf="controls.lastName?.errors?.required" class="invalid-feedback">
             Último Nome é obrigatório.
           </div>
@@ -48,7 +48,7 @@
           type="text"
           placeholder="Insira o e-mail"
           formControlName="email"
-          [ngClass]="{'is-invalid': controls.email?.errors && controls.email?.touched}" />
+          [ngClass]="cssValidator(controls.email)" />
         <div *ngIf="controls.email?.errors?.required" class="invalid-feedback">
           Email é obrigatório.
         </div>
@@ -62,7 +62,7 @@
           type="text"
           placeholder="Insira o nome de Usuário"
           formControlName="userName"
-          [ngClass]="{'is-invalid': controls.userName?.errors && controls.userName?.touched}" />
+          [ngClass]="cssValidator(controls.userName)" />
         <div *ngIf="controls.userName?.errors?.required" class="invalid-feedback">
           Usuário é obrigatório.
         </div>
@@ -74,7 +74,7 @@
             type="password"
             placeholder="Digite uma Senha"
             formControlName="password"
-            [ngClass]="{'is-invalid': controls.password?.errors && controls.password?.touched}" />
+            [ngClass]="cssValidator(controls.password)" />
           <div *ngIf="controls.password?.errors?.required" class="invalid-feedback">
             Senha é obrigatório.
           </div>
@@ -88,7 +88,7 @@
             type="password"
             placeholder="Confirme a Senha"
             formControlName="confirmPassword"
-            [ngClass]="{'is-invalid': controls.confirmPassword?.errors && controls.confirmPassword?.touched}" />
+            [ngClass]="cssValidator(controls.confirmPassword)" />
           <div *ngIf="controls.confirmPassword?.errors?.required" class="invalid-feedback">
             Confirmar Senha é obrigatório.
           </div>
