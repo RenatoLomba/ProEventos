@@ -11,12 +11,14 @@ namespace ProEventos.API.Config
         public static void InjectServices(IServiceCollection services)
         {
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IBatchService, BatchService>();
         }
 
         public static void InjectPersistences(IServiceCollection services)
         {
             services.AddScoped<IGeneralPersist, GeneralPersist>();
             services.AddScoped<IEventPersist, EventPersist>();
+            services.AddScoped<IBatchPersist, BatchPersist>();
         }
     }
 }

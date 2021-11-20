@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Event } from '../models/Event';
 import { take } from 'rxjs/operators';
+import { Constants } from '../utils/constants';
 
 @Injectable()
 export class EventService {
-  private _baseUrl = 'https://localhost:5001/api/events';
+  private _baseUrl = `${Constants.API_URL}/events`;
 
   constructor(private http: HttpClient) {}
 

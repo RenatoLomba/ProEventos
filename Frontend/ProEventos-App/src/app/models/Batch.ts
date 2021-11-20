@@ -6,5 +6,5 @@ export interface Batch {
   endDate?: Date;
   qty: number;
   eventId: number;
-  event: Event;
+  event: Event | null;
 }
