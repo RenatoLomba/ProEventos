@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Event } from '../models/Event';
 import { take } from 'rxjs/operators';
 import { Constants } from '../utils/constants';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class EventService {
@@ -32,5 +33,14 @@ export class EventService {
 
   deleteEvent(id: number) {
     return this.http.delete<boolean>(`${this._baseUrl}/${id}`).pipe(take(1));
+  }
+
+  uploadImage(eventId: number, file: File): Observable<Event> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http
+      .post<Event>(`${this._baseUrl}/upload-image/${eventId}`, formData)
+      .pipe(take(1));
   }
 }

@@ -15,6 +15,7 @@ import { Batch } from '../../../models/Batch';
 import { EventService } from '../../../services/event.service';
 import { BatchService } from '../../../services/batch.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-event-detail',
@@ -27,6 +28,8 @@ export class EventDetailComponent implements OnInit {
   eventId?: number;
   modalRef?: BsModalRef;
   batchToDelete = { id: 0, name: '', index: 0 };
+  imageUri = 'assets/upload-cloud.png';
+  file?: File;
 
   private _saveStateMode: 'post' | 'put' = 'post';
   private _bsConfig = {
@@ -97,7 +100,7 @@ export class EventDetailComponent implements OnInit {
       peopleQty: ['', [Validators.required, Validators.max(120000)]],
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      imageUri: ['', Validators.required],
+      imageUri: [''],
       batches: this.formBuilder.array([]),
     });
   }
@@ -156,6 +159,10 @@ export class EventDetailComponent implements OnInit {
       next: (event) => {
         this.event = { ...event };
         this.form.patchValue(this.event);
+
+        if (this.event?.imageUri) {
+          this.imageUri = `${environment.apiUrl}/resources/images/${this.event.imageUri}`;
+        }
 
         this.event.batches.forEach((bt) =>
           this.batches.push(this._createBatch(bt)),
@@ -258,5 +265,38 @@ export class EventDetailComponent implements OnInit {
 
   public declineDeleteBatch(): void {
     this.modalRef?.hide();
+  }
+
+  public onFileChange(ev: any): void {
+    const reader = new FileReader();
+
+    reader.onload = (event) =>
+      (this.imageUri = String(event.target?.result || this.imageUri));
+
+    this.file = ev.target.files[0];
+    if (!this.file) return;
+
+    reader.readAsDataURL(this.file);
+
+    this._uploadImage();
+  }
+
+  private _uploadImage(): void {
+    if (!this.eventId || !this.file) return;
+    this.spinner.show();
+
+    this.eventService
+      .uploadImage(this.eventId, this.file)
+      .subscribe(
+        () => {
+          this._loadEvent();
+          this.toastr.success('Imagem atualizada.', 'Sucesso!');
+        },
+        (error: any) => {
+          console.log(error);
+          this.toastr.error(`Detalhes: ${error.message}`, 'Error!');
+        },
+      )
+      .add(() => this.spinner.hide());
   }
 }

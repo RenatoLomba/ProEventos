@@ -1,257 +1,317 @@
+<div class="row">
+  <div [ngClass]="{'col-md-8 pr-0': isEditMode, 'col-md-12': !isEditMode}">
+    <div class="card rounded shadow-sm">
+      <form [formGroup]="form">
 
-<div class="card rounded shadow-sm">
- <form [formGroup]="form">
-
-   <div class="p-3">
-     <!-- <p>Form value: {{form.value | json}}</p>
-     <p>Form valid: {{form.status | json}}</p> -->
- 		<div class="form-row">
- 			<div class="form-group col-md-12">
- 				<label>Tema</label>
- 				<input
-          type="text"
-          class="form-control"
-          formControlName="theme"
-          placeholder="Insira o Tema"
-          [ngClass]="cssValidator(controls.theme)"
-        >
-        <div *ngIf="controls.theme?.errors?.required" class="invalid-feedback">
-          Tema é obrigatório.
-        </div>
-        <div *ngIf="controls.theme?.errors?.minlength" class="invalid-feedback">
-          Tema deve ter no mínimo 4 caracteres.
-        </div>
-        <div *ngIf="controls.theme?.errors?.maxlength" class="invalid-feedback">
-          Tema deve ter no máximo 50 caracteres.
-        </div>
- 			</div>
- 		</div>
- 		<div class="form-row">
- 			<div class="form-group col-md-8">
- 				<label>Local</label>
- 				<input
-          type="text"
-          class="form-control"
-          formControlName="place"
-          placeholder=""
-          [ngClass]="cssValidator(controls.place)"
-        >
-        <div *ngIf="controls.place?.errors?.required" class="invalid-feedback">
-          Local é obrigatório.
-        </div>
- 			</div>
- 			<div class="form-group col-md-4">
- 				<label>Data e Hora</label>
- 				<input
-          type="datetime"
-          class="form-control"
-          formControlName="eventDate"
-          placeholder=""
-          [ngClass]="cssValidator(controls.eventDate)"
-          bsDatepicker
-          [bsConfig]="bsConfig"
-        >
-        <div *ngIf="controls.eventDate?.errors?.required" class="invalid-feedback">
-          Data e Hora é obrigatório.
-        </div>
- 			</div>
- 		</div>
- 		<div class="form-row">
- 			<div class="form-group col-md-2">
- 				<label>Qtd Pessoas</label>
- 				<input
-          type="number"
-          class="form-control"
-          formControlName="peopleQty"
-          placeholder=""
-          [ngClass]="cssValidator(controls.peopleQty)"
-        >
-        <div *ngIf="controls.peopleQty?.errors?.required" class="invalid-feedback">
-          Qtd Pessoas é obrigatório.
-        </div>
-        <div *ngIf="controls.peopleQty?.errors?.max" class="invalid-feedback">
-          Qtd Pessoas deve ser no máximo 120000.
-        </div>
- 			</div>
- 			<div class="form-group col-md-2">
- 				<label>Telefone</label>
- 				<input
-          type="text"
-          class="form-control"
-          formControlName="phone"
-          placeholder="(000) 90000-0000"
-          [ngClass]="cssValidator(controls.phone)"
-        >
-        <div *ngIf="controls.phone?.errors?.required" class="invalid-feedback">
-          Telefone é obrigatório.
-        </div>
- 			</div>
- 			<div class="form-group col-md-4">
- 				<label>E-mail</label>
- 				<input
-          type="text"
-          class="form-control"
-          formControlName="email"
-          placeholder="e-mail"
-          [ngClass]="cssValidator(controls.email)"
-        >
-        <div *ngIf="controls.email?.errors?.required" class="invalid-feedback">
-          E-mail é obrigatório.
-        </div>
-        <div *ngIf="controls.email?.errors?.email" class="invalid-feedback">
-          E-mail inválido.
-        </div>
- 			</div>
- 			<div class="form-group col-md-4">
- 				<label>Imagem</label>
- 				<input
-          type="text"
-          class="form-control"
-          formControlName="imageUri"
-          placeholder="imagem"
-          [ngClass]="cssValidator(controls.imageUri)"
-        >
-        <div *ngIf="controls.imageUri?.errors?.required" class="invalid-feedback">
-          Imagem é obrigatório.
-        </div>
- 			</div>
- 		</div>
- 	</div>
- 	<div class="card-footer">
- 		<div class="d-flex">
- 			<button
-        (click)="resetForm($event)"
-        class="btn btn-outline-secondary mr-auto border">
- 				Cancelar Alteração
- 			</button>
- 			<button
-        (click)="saveEvent()"
-        class="btn btn-success"
-        [disabled]="!form.valid"
-      >
- 				<!-- <span class="spinner-border spinner-border-sm mr-1"></span> -->
- 				Salvar Evento
- 			</button>
- 		</div>
- 	</div>
- </form>
-</div>
-
-<div class="card rounded shadow-sm mt-4" *ngIf="isEditMode">
-  <!-- <p>Form value: {{batches.value | json}}</p>
-  <p>Form valid: {{batches.status | json}}</p> -->
-  <div class="p-3">
-    <div class="d-flex border-bottom">
-      <h2 class="mr-auto">
-        Lotes do Evento
-      </h2>
-      <h2>
-        <i class="fas fa-money-bill-wave"></i>
-      </h2>
-    </div>
-    <p>Clique em Lote para adicionar e preencher novos Lotes</p>
-    <div class="form-row p-1" >
-      <div class="col" [formGroup]="form">
-        <div
-          formArrayName="batches"
-          *ngFor="let batch of batches.controls; let i = index"
-        >
-          <fieldset class="form-group" [formGroupName]="i">
-            <legend class="d-flex justify-content-between capitalize">
-              {{getBatchControl(i, 'name')?.value || 'Nome do lote'}}
-              <button
-                class="p-2 btn btn-sm btn-outline-warning mb-1 d-flex align-items-center"
-                tooltip="Excluir Lote"
-                placement="left"
-                [adaptivePosition]="false"
-                [delay]="500"
-                (click)="removeBatch(template, i)"
-              >
-                <i class="fa fa-window-close my-1"></i>
-                <b class="ml-1 d-none d-sm-block">Excluir</b>
-              </button>
-            </legend>
-          <div class="row">
-            <div class="form-group col-md-4">
-              <label>Nome</label>
+        <div class="p-3">
+          <!-- <p>Form value: {{form.value | json}}</p>
+          <p>Form valid: {{form.status | json}}</p> -->
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label>Tema</label>
               <input
                 type="text"
                 class="form-control"
-                formControlName="name"
-                placeholder="Lote"
-                [ngClass]="cssValidator(getBatchControl(i, 'name'))"
+                formControlName="theme"
+                placeholder="Insira o Tema"
+                [ngClass]="cssValidator(controls.theme)"
               >
-            </div>
-            <div class="form-group col-md-4">
-              <label>Quantidade</label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="qty"
-                placeholder="000"
-                [ngClass]="cssValidator(getBatchControl(i, 'qty'))">
-            </div>
-            <div class="form-group col-md-4">
-              <label>Preço</label>
-              <input
-                type="text"
-                currencyMask
-                class="form-control"
-                formControlName="price"
-                placeholder="R$ 0,00"
-                currencyMask
-                [options]="{
-                  prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'
-                }"
-                [ngClass]="cssValidator(getBatchControl(i, 'price'))">
-            </div>
-            <div class="form-group col-md-4">
-              <label>Data Início</label>
-              <input
-                type="datetime"
-                class="form-control"
-                formControlName="startDate"
-                placeholder="01/01/2019"
-                bsDatepicker
-                [bsConfig]="bsConfigBatch"
-              >
-            </div>
-            <div class="form-group col-md-4">
-              <label>Data Fim</label>
-              <input
-                type="datetime"
-                class="form-control"
-                formControlName="endDate"
-                placeholder="01/01/2019"
-                bsDatepicker
-                [bsConfig]="bsConfigBatch"
-              >
+              <div *ngIf="controls.theme?.errors?.required" class="invalid-feedback">
+                Tema é obrigatório.
+              </div>
+              <div *ngIf="controls.theme?.errors?.minlength" class="invalid-feedback">
+                Tema deve ter no mínimo 4 caracteres.
+              </div>
+              <div *ngIf="controls.theme?.errors?.maxlength" class="invalid-feedback">
+                Tema deve ter no máximo 50 caracteres.
+              </div>
             </div>
           </div>
-        </fieldset>
+          <div class="form-row">
+            <div class="form-group col-md-8">
+              <label>Local</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="place"
+                placeholder=""
+                [ngClass]="cssValidator(controls.place)"
+              >
+              <div *ngIf="controls.place?.errors?.required" class="invalid-feedback">
+                Local é obrigatório.
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Data e Hora</label>
+              <input
+                type="datetime"
+                class="form-control"
+                formControlName="eventDate"
+                placeholder=""
+                [ngClass]="cssValidator(controls.eventDate)"
+                bsDatepicker
+                [bsConfig]="bsConfig"
+              >
+              <div *ngIf="controls.eventDate?.errors?.required" class="invalid-feedback">
+                Data e Hora é obrigatório.
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>Qtd Pessoas</label>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="peopleQty"
+                placeholder=""
+                [ngClass]="cssValidator(controls.peopleQty)"
+              >
+              <div *ngIf="controls.peopleQty?.errors?.required" class="invalid-feedback">
+                Qtd Pessoas é obrigatório.
+              </div>
+              <div *ngIf="controls.peopleQty?.errors?.max" class="invalid-feedback">
+                Qtd Pessoas deve ser no máximo 120000.
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Telefone</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="phone"
+                placeholder="(000) 90000-0000"
+                [ngClass]="cssValidator(controls.phone)"
+              >
+              <div *ngIf="controls.phone?.errors?.required" class="invalid-feedback">
+                Telefone é obrigatório.
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label>E-mail</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="email"
+                placeholder="e-mail"
+                [ngClass]="cssValidator(controls.email)"
+              >
+              <div *ngIf="controls.email?.errors?.required" class="invalid-feedback">
+                E-mail é obrigatório.
+              </div>
+              <div *ngIf="controls.email?.errors?.email" class="invalid-feedback">
+                E-mail inválido.
+              </div>
+            </div>
+            <!-- <div class="form-group col-md-4">
+              <label>Imagem</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="imageUri"
+                placeholder="imagem"
+                [ngClass]="cssValidator(controls.imageUri)"
+              >
+              <div *ngIf="controls.imageUri?.errors?.required" class="invalid-feedback">
+                Imagem é obrigatório.
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="d-flex">
+            <button
+              type="button"
+              (click)="resetForm($event)"
+              class="btn btn-outline-secondary mr-auto border">
+              Cancelar Alteração
+            </button>
+            <button
+              (click)="saveEvent()"
+              class="btn btn-success"
+              [disabled]="!form.valid"
+            >
+              <!-- <span class="spinner-border spinner-border-sm mr-1"></span> -->
+              Salvar Evento
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card rounded shadow-sm mt-3" *ngIf="isEditMode">
+      <div class="p-3">
+        <div class="d-flex border-bottom">
+          <h2 class="mr-auto">
+            Lotes do Evento
+          </h2>
+          <h2>
+            <i class="fas fa-money-bill-wave"></i>
+          </h2>
+        </div>
+        <p>Clique em Lote para adicionar e preencher novos Lotes</p>
+        <div class="form-row p-1" >
+          <div class="col" [formGroup]="form">
+            <div
+              formArrayName="batches"
+              *ngFor="let batch of batches.controls; let i = index"
+            >
+              <fieldset class="form-group" [formGroupName]="i">
+                <legend class="d-flex justify-content-between capitalize">
+                  {{getBatchControl(i, 'name')?.value || 'Nome do lote'}}
+                  <button
+                    class="p-2 btn btn-sm btn-outline-warning mb-1 d-flex align-items-center"
+                    tooltip="Excluir Lote"
+                    placement="left"
+                    [adaptivePosition]="false"
+                    [delay]="500"
+                    (click)="removeBatch(template, i)"
+                  >
+                    <i class="fa fa-window-close my-1"></i>
+                    <b class="ml-1 d-none d-sm-block">Excluir</b>
+                  </button>
+                </legend>
+              <div class="row">
+                <div class="form-group col-md-4">
+                  <label>Nome</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="name"
+                    placeholder="Lote"
+                    [ngClass]="cssValidator(getBatchControl(i, 'name'))"
+                  >
+                </div>
+                <div class="form-group col-md-4">
+                  <label>Quantidade</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="qty"
+                    placeholder="000"
+                    [ngClass]="cssValidator(getBatchControl(i, 'qty'))">
+                </div>
+                <div class="form-group col-md-4">
+                  <label>Preço</label>
+                  <input
+                    type="text"
+                    currencyMask
+                    class="form-control"
+                    formControlName="price"
+                    placeholder="R$ 0,00"
+                    currencyMask
+                    [options]="{
+                      prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'
+                    }"
+                    [ngClass]="cssValidator(getBatchControl(i, 'price'))">
+                </div>
+                <div class="form-group col-md-4">
+                  <label>Data Início</label>
+                  <input
+                    type="datetime"
+                    class="form-control"
+                    formControlName="startDate"
+                    placeholder="01/01/2019"
+                    bsDatepicker
+                    [bsConfig]="bsConfigBatch"
+                  >
+                </div>
+                <div class="form-group col-md-4">
+                  <label>Data Fim</label>
+                  <input
+                    type="datetime"
+                    class="form-control"
+                    formControlName="endDate"
+                    placeholder="01/01/2019"
+                    bsDatepicker
+                    [bsConfig]="bsConfigBatch"
+                  >
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+        <button (click)="addBatch()" class="d-flex btn btn-outline-primary">
+          <i class="fa fa-plus-circle my-1"></i>
+          <b class="ml-1">Lote</b>
+        </button>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex">
+          <button class="btn btn-outline-secondary mr-auto border">
+            Cancelar Alteração
+          </button>
+          <button
+            class="btn btn-success"
+            [disabled]="!hasBatches || !isBatchesValid"
+            (click)="saveBatches()"
+          >
+            Salvar Lotes
+          </button>
+        </div>
       </div>
     </div>
   </div>
-    <button (click)="addBatch()" class="d-flex btn btn-outline-primary">
-      <i class="fa fa-plus-circle my-1"></i>
-      <b class="ml-1">Lote</b>
-    </button>
-  </div>
-  <div class="card-footer">
-    <div class="d-flex">
-      <button class="btn btn-outline-secondary mr-auto border">
-        Cancelar Alteração
-      </button>
-      <button
-        class="btn btn-success"
-        [disabled]="!hasBatches || !isBatchesValid"
-        (click)="saveBatches()"
-      >
-        Salvar Lotes
-      </button>
+
+  <div class="col-md-4" *ngIf="isEditMode">
+    <div [formGroup]="form" class="card-evento-view shadow-sm">
+      <div class="form-row">
+        <div class="form-group m-0">
+          <input
+            type="file"
+            #file
+            class="form-control is-invalid"
+            placeholder=""
+            style="display: none"
+            (change)="onFileChange($event)">
+        </div>
+      </div>
+      <div class="card profile-card-2">
+        <div class="card-img-block">
+          <img
+            [src]="imageUri"
+            class="image img-fluid"
+            alt="Card image cap"
+            tooltip="Uplaod de Nova Imagem"
+            [adaptivePosition]="false"
+            (click)="file.click()"
+            placement="bottom" />
+        </div>
+        <div class="card-body pt-3">
+          <h4>{{controls?.theme.value}}</h4>
+          <p class="card-text">
+            <b>Local:</b> {{controls?.place.value}}
+            <br>
+            <b>Data:</b> {{controls?.eventDate.value | datetimeFormat}}
+          </p>
+          <hr>
+          <p class="card-text">
+            <b>Contatos</b><br>
+            <small class="text-muted">Telefone: {{controls?.phone.value}}</small>
+            <br>
+            <small class="text-muted">E-mail: {{controls?.email.value}}</small>
+          </p>
+          <p class="card-text">
+            Capacidade:
+            <small class="text-muted">{{controls?.peopleQty.value}}</small>
+          </p>
+          <div class="row">
+            <div class="icon-block col-md-8 iconesSociais">
+              <a href="">
+                <i class=""></i>
+              </a>
+            </div>
+            <!--div class="col-md-4 d-flex justify-content-center">
+              <a href="#" class="btn btn-outline-primary">Participar</a>
+            </div-->
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
 <br>
 
 <ng-template #template>

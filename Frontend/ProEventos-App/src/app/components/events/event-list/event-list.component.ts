@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { EventService } from '../../../services/event.service';
 import { Event } from '../../../models/Event';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-event-list',
@@ -48,7 +49,18 @@ export class EventListComponent implements OnInit {
     this.spinner.show();
     this.eventService.getEvents().subscribe({
       next: (events) => {
-        this._events = events;
+        this._events = events.map((ev) => {
+          const imageUri = ev.imageUri
+            ? `${environment.apiUrl}/resources/images/${ev.imageUri}`
+            : 'assets/no-image.png';
+
+          return {
+            ...ev,
+            imageUri,
+          };
+        });
+        console.log(this._events);
+
         this.filteredEvents = this._events;
       },
       error: (error) => {

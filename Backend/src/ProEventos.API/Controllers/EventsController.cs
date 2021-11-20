@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProEventos.Application.Contracts;
@@ -12,9 +15,15 @@ namespace ProEventos.API.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
-        public EventsController(IEventService eventService)
+        private readonly IWebHostEnvironment _env;
+
+        public EventsController(
+            IEventService eventService,
+            IWebHostEnvironment env
+        )
         {
             this._eventService = eventService;
+            this._env = env;
         }
 
         [HttpGet]
@@ -78,6 +87,32 @@ namespace ProEventos.API.Controllers
             }
         }
 
+        [HttpPost("upload-image/{eventId}")]
+        public async Task<IActionResult> UploadImage(int eventId)
+        {
+            try
+            {
+                var evnt = await this._eventService.GetEventById(eventId);
+                if (evnt == null) return NoContent();
+
+                var file = Request.Form.Files[0];
+                if (file.Length > 0)
+                {
+                    this.DeleteImage(evnt.ImageUri);
+                    evnt.ImageUri = await this.SaveImage(file);
+                }
+
+                var evntResponse = await this._eventService.UpdateEvent(eventId, evnt);
+
+                return Ok(evntResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ex.Message);
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] EventDto model)
         {
@@ -100,9 +135,21 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                return await this._eventService.DeleteEvent(id) ?
-                    Ok(true) :
-                    BadRequest("Event Not Deleted.");
+                var evnt = await this._eventService.GetEventById(id);
+                if (evnt == null) return NoContent();
+
+                string imageUri = evnt.ImageUri;
+                bool isDeleted = await this._eventService.DeleteEvent(id);
+
+                if (isDeleted)
+                {
+                    this.DeleteImage(imageUri);
+                    return Ok(true);
+                }
+                else
+                {
+                    return BadRequest("Event Not Deleted.");
+                }
             }
             catch (Exception ex)
             {
@@ -114,6 +161,41 @@ namespace ProEventos.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     ex.Message);
             }
+        }
+
+        [NonAction]
+        private void DeleteImage(string imageUri)
+        {
+            var imagePath = Path.Combine(
+                this._env.ContentRootPath, @"Resources/Images", imageUri
+            );
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+        }
+
+        [NonAction]
+        private async Task<string> SaveImage(IFormFile file)
+        {
+            string imageName = new string(
+                Path.GetFileNameWithoutExtension(file.FileName)
+                    .Take(10).ToArray()
+            ).Replace(" ", "-");
+
+            imageName =
+                $"{imageName}{DateTime.UtcNow.ToString("yymmssfff")}{Path.GetExtension(file.FileName)}";
+
+            var imagePath = Path.Combine(
+                this._env.ContentRootPath, @"Resources/Images", imageName
+            );
+
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return imageName;
         }
     }
 }
