@@ -35,7 +35,8 @@ namespace ProEventos.Persistence.Implementations
         public async Task<Speaker[]> GetSpeakersByNameAsync(string name, bool includeEvents = false)
         {
             IQueryable<Speaker> query = _context.Speakers
-                .Include(sp => sp.SocialNetworks);
+                .Include(sp => sp.SocialNetworks)
+                .Include(sp => sp.User);
 
             if (includeEvents)
             {
@@ -47,7 +48,8 @@ namespace ProEventos.Persistence.Implementations
             query = query
                 .AsNoTracking()
                 .OrderBy(sp => sp.Id)
-                .Where(sp => sp.Name.ToLower().Contains(name.ToLower()));
+                .Where(sp =>
+                    sp.User.FullName.ToLower().Contains(name.ToLower()));
 
             return await query.ToArrayAsync();
         }

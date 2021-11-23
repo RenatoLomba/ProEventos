@@ -24,18 +24,19 @@ namespace ProEventos.Application.Implementations
             this._mapper = mapper;
         }
 
-        public async Task<EventDto> AddEvent(EventDto model)
+        public async Task<EventDto> AddEvent(int userId, EventDto model)
         {
             try
             {
                 var evnt = this._mapper.Map<Event>(model);
+                evnt.UserId = userId;
 
                 this._generalPersist.Add<Event>(evnt);
 
                 if (await this._generalPersist.SaveChangesAsync())
                 {
                     return this._mapper.Map<EventDto>(
-                        await this._eventPersist.GetEventByIdAsync(evnt.Id)
+                        await this._eventPersist.GetEventByIdAsync(userId, evnt.Id)
                     );
                 }
 
@@ -47,14 +48,17 @@ namespace ProEventos.Application.Implementations
             }
         }
 
-        public async Task<EventDto> UpdateEvent(int eventId, EventDto model)
+        public async Task<EventDto> UpdateEvent(int userId, 
+            int eventId, EventDto model)
         {
             try
             {
-                var evnt = await this._eventPersist.GetEventByIdAsync(eventId);
+                var evnt = await this._eventPersist.GetEventByIdAsync(
+                    userId, eventId);
                 if (evnt == null) return null;
 
                 model.Id = evnt.Id;
+                model.UserId = userId;
 
                 _mapper.Map(model, evnt);
 
@@ -63,7 +67,7 @@ namespace ProEventos.Application.Implementations
                 if (await this._generalPersist.SaveChangesAsync())
                 {
                     return this._mapper.Map<EventDto>(
-                        await this._eventPersist.GetEventByIdAsync(evnt.Id)
+                        await this._eventPersist.GetEventByIdAsync(userId, evnt.Id)
                     );
                 }
 
@@ -75,11 +79,12 @@ namespace ProEventos.Application.Implementations
             }
         }
 
-        public async Task<bool> DeleteEvent(int eventId)
+        public async Task<bool> DeleteEvent(int userId, int eventId)
         {
             try
             {
-                var evnt = await this._eventPersist.GetEventByIdAsync(eventId);
+                var evnt = await this._eventPersist.GetEventByIdAsync(
+                    userId, eventId);
                 if (evnt == null) throw new Exception("Event Not Found");
 
                 this._generalPersist.Delete(evnt);
@@ -91,11 +96,13 @@ namespace ProEventos.Application.Implementations
             }
         }
 
-        public async Task<EventDto[]> GetEvents(bool includeSpeakers = false)
+        public async Task<EventDto[]> GetEvents(int userId, 
+            bool includeSpeakers = false)
         {
             try
             {
-                var result = await this._eventPersist.GetEventsAsync(includeSpeakers);
+                var result = await this._eventPersist.GetEventsAsync(
+                    userId, includeSpeakers);
                 return this._mapper.Map<EventDto[]>(result);
             }
             catch (Exception ex)
@@ -104,12 +111,14 @@ namespace ProEventos.Application.Implementations
             }
         }
 
-        public async Task<EventDto> GetEventById(int id, bool includeSpeakers = false)
+        public async Task<EventDto> GetEventById(int userId, 
+            int id, bool includeSpeakers = false)
         {
             try
             {
                 return this._mapper.Map<EventDto>(
-                    await this._eventPersist.GetEventByIdAsync(id, includeSpeakers)
+                    await this._eventPersist.GetEventByIdAsync(
+                        userId, id, includeSpeakers)
                 );
             }
             catch (Exception ex)
@@ -118,12 +127,14 @@ namespace ProEventos.Application.Implementations
             }
         }
 
-        public async Task<EventDto[]> GetEventsByTheme(string theme, bool includeSpeakers = false)
+        public async Task<EventDto[]> GetEventsByTheme(int userId, 
+            string theme, bool includeSpeakers = false)
         {
             try
             {
                 return this._mapper.Map<EventDto[]>(
-                    await this._eventPersist.GetEventsByThemeAsync(theme, includeSpeakers)
+                    await this._eventPersist.GetEventsByThemeAsync(
+                        userId, theme, includeSpeakers)
                 );
             }
             catch (Exception ex)

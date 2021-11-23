@@ -5,8 +5,10 @@ namespace ProEventos.Persistence.Contracts
 {
     public interface IEventPersist
     {
-        Task<Event[]> GetEventsByThemeAsync(string theme, bool includeSpeakers = false);
-        Task<Event[]> GetEventsAsync(bool includeSpeakers = false);
-        Task<Event> GetEventByIdAsync(int id, bool includeSpeakers = false);
+        Task<Event[]> GetEventsByThemeAsync(
+            int userId, string theme, bool includeSpeakers = false);
+        Task<Event[]> GetEventsAsync(int userId, bool includeSpeakers = false);
+        Task<Event> GetEventByIdAsync(
+            int userId, int id, bool includeSpeakers = false);
     }
 }

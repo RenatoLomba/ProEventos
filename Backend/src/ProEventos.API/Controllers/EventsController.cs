@@ -2,28 +2,35 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProEventos.API.Extensions;
 using ProEventos.Application.Contracts;
 using ProEventos.Application.Dtos;
 
 namespace ProEventos.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class EventsController : ControllerBase
     {
+        private int userId { get => this.User.GetUserId(); }
         private readonly IEventService _eventService;
         private readonly IWebHostEnvironment _env;
+        private readonly IAccountService _accountService;
 
         public EventsController(
             IEventService eventService,
-            IWebHostEnvironment env
+            IWebHostEnvironment env,
+            IAccountService accountService
         )
         {
             this._eventService = eventService;
             this._env = env;
+            this._accountService = accountService;
         }
 
         [HttpGet]
@@ -35,11 +42,12 @@ namespace ProEventos.API.Controllers
 
                 if (!String.IsNullOrEmpty(theme))
                 {
-                    evnts = await this._eventService.GetEventsByTheme(theme, true);
+                    evnts = await this._eventService.GetEventsByTheme(
+                        this.userId, theme, true);
                 }
                 else
                 {
-                    evnts = await this._eventService.GetEvents(true);
+                    evnts = await this._eventService.GetEvents(this.userId, true);
                 }
 
                 if (evnts == null) return NoContent();
@@ -58,7 +66,8 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evnt = await this._eventService.GetEventById(id, true);
+                var evnt = await this._eventService.GetEventById(
+                    this.userId, id, true);
                 if (evnt == null) return NoContent();
 
                 return Ok(evnt);
@@ -75,7 +84,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evnt = await this._eventService.AddEvent(model);
+                var evnt = await this._eventService.AddEvent(this.userId, model);
                 if (evnt == null) return NoContent();
 
                 return Ok(evnt);
@@ -92,7 +101,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evnt = await this._eventService.GetEventById(eventId);
+                var evnt = await this._eventService.GetEventById(this.userId, eventId);
                 if (evnt == null) return NoContent();
 
                 var file = Request.Form.Files[0];
@@ -102,7 +111,8 @@ namespace ProEventos.API.Controllers
                     evnt.ImageUri = await this.SaveImage(file);
                 }
 
-                var evntResponse = await this._eventService.UpdateEvent(eventId, evnt);
+                var evntResponse = await this._eventService.UpdateEvent(
+                    this.userId, eventId, evnt);
 
                 return Ok(evntResponse);
             }
@@ -118,7 +128,8 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evnt = await this._eventService.UpdateEvent(id, model);
+                var evnt = await this._eventService.UpdateEvent(
+                    this.userId, id, model);
                 if (evnt == null) return NoContent();
 
                 return Ok(evnt);
@@ -135,13 +146,15 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evnt = await this._eventService.GetEventById(id);
+                var evnt = await this._eventService.GetEventById(
+                    this.userId, id);
                 if (evnt == null) return NoContent();
 
                 string imageUri = evnt.ImageUri;
-                bool isDeleted = await this._eventService.DeleteEvent(id);
+                bool isDeleted = await this._eventService.DeleteEvent(
+                    this.userId, id);
 
-                if (isDeleted)
+                if (isDeleted && !String.IsNullOrEmpty(imageUri))
                 {
                     this.DeleteImage(imageUri);
                     return Ok(true);

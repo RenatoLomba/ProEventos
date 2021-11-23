@@ -16,7 +16,8 @@ namespace ProEventos.Persistence.Implementations
             this._context = context;
         }
 
-        public async Task<Event[]> GetEventsAsync(bool includeSpeakers = false)
+        public async Task<Event[]> GetEventsAsync(int userId, 
+            bool includeSpeakers = false)
         {
             IQueryable<Event> query = _context.Events
                 .Include(ev => ev.Batches)
@@ -29,12 +30,15 @@ namespace ProEventos.Persistence.Implementations
                     .ThenInclude(se => se.Speaker);
             }
 
-            query = query.AsNoTracking().OrderBy(ev => ev.Id);
+            query = query.AsNoTracking()
+                .Where(ev => ev.UserId.Equals(userId))
+                .OrderBy(ev => ev.Id);
 
             return await query.ToArrayAsync();
         }
 
-        public async Task<Event[]> GetEventsByThemeAsync(string theme, bool includeSpeakers = false)
+        public async Task<Event[]> GetEventsByThemeAsync(int userId, 
+            string theme, bool includeSpeakers = false)
         {
             IQueryable<Event> query = _context.Events
                 .Include(ev => ev.Batches)
@@ -50,12 +54,15 @@ namespace ProEventos.Persistence.Implementations
             query = query
                 .AsNoTracking()
                 .OrderBy(ev => ev.Id)
-                .Where(ev => ev.Theme.ToLower().Contains(theme.ToLower()));
+                .Where(ev => 
+                    ev.Theme.ToLower().Contains(theme.ToLower()) && 
+                    ev.UserId.Equals(userId));
 
             return await query.ToArrayAsync();
         }
 
-        public async Task<Event> GetEventByIdAsync(int id, bool includeSpeakers = false)
+        public async Task<Event> GetEventByIdAsync(int userId, 
+            int id, bool includeSpeakers = false)
         {
             IQueryable<Event> query = _context.Events
                 .Include(ev => ev.Batches)
@@ -71,7 +78,7 @@ namespace ProEventos.Persistence.Implementations
             query = query
                 .AsNoTracking()
                 .OrderBy(ev => ev.Id)
-                .Where(ev => ev.Id.Equals(id));
+                .Where(ev => ev.Id.Equals(id) && ev.UserId.Equals(userId));
 
             return await query.FirstOrDefaultAsync();
         }

@@ -6,12 +6,14 @@ namespace ProEventos.Application.Contracts
 {
     public interface IEventService
     {
-        Task<EventDto> AddEvent(EventDto model);
-        Task<EventDto> UpdateEvent(int eventId, EventDto model);
-        Task<bool> DeleteEvent(int eventId);
+        Task<EventDto> AddEvent(int userId, EventDto model);
+        Task<EventDto> UpdateEvent(int userId, int eventId, EventDto model);
+        Task<bool> DeleteEvent(int userId, int eventId);
 
-        Task<EventDto[]> GetEvents(bool includeSpeakers = false);
-        Task<EventDto[]> GetEventsByTheme(string theme, bool includeSpeakers = false);
-        Task<EventDto> GetEventById(int id, bool includeSpeakers = false);
+        Task<EventDto[]> GetEvents(int userId, bool includeSpeakers = false);
+        Task<EventDto[]> GetEventsByTheme(int userId, 
+            string theme, bool includeSpeakers = false);
+        Task<EventDto> GetEventById(int userId, 
+            int id, bool includeSpeakers = false);
     }
 }

@@ -12,6 +12,8 @@ namespace ProEventos.API.Config
         {
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IBatchService, BatchService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
 
         public static void InjectPersistences(IServiceCollection services)
@@ -19,6 +21,7 @@ namespace ProEventos.API.Config
             services.AddScoped<IGeneralPersist, GeneralPersist>();
             services.AddScoped<IEventPersist, EventPersist>();
             services.AddScoped<IBatchPersist, BatchPersist>();
+            services.AddScoped<IUserPersist, UserPersist>();
         }
     }
 }

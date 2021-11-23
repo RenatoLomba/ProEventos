@@ -39,6 +39,8 @@ namespace ProEventos.Application.Dtos
             EmailAddress(ErrorMessage = "{0} inválido.")
         ]
         public string Email { get; set; }
+        public int UserId { get; set; }
+        public UserDto User { get; set; }
 
         public IEnumerable<BatchDto> Batches { get; set; }
         public IEnumerable<SocialNetworkDto> SocialNetworks { get; set; }
