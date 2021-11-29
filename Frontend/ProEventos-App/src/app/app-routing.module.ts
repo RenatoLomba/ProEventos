@@ -11,32 +11,52 @@ import { SpeakersComponent } from './components/speakers/speakers.component';
 import { LoginComponent } from './components/user/login/login.component';
 import { RegisterComponent } from './components/user/register/register.component';
 import { UserComponent } from './components/user/user.component';
+import { AuthGuard } from './guards/auth.guard';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
+  },
+
+  /**
+   * ROTAS AUTENTICADAS
+   */
+  {
+    path: '',
+    runGuardsAndResolvers: 'always',
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'user/profile', component: ProfileComponent },
+      { path: 'events', redirectTo: 'events/list' },
+      {
+        path: 'events',
+        component: EventsComponent,
+        children: [
+          { path: 'detail/:id', component: EventDetailComponent },
+          { path: 'detail', component: EventDetailComponent },
+          { path: 'list', component: EventListComponent },
+        ],
+      },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'contacts', component: ContactsComponent },
+      { path: 'speakers', component: SpeakersComponent },
+    ],
+  },
+
+  { path: 'user', redirectTo: 'user/login' },
   {
     path: 'user',
     component: UserComponent,
     children: [
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'profile', component: ProfileComponent },
     ],
   },
-  { path: 'events', redirectTo: 'events/list' },
-  {
-    path: 'events',
-    component: EventsComponent,
-    children: [
-      { path: 'detail/:id', component: EventDetailComponent },
-      { path: 'detail', component: EventDetailComponent },
-      { path: 'list', component: EventListComponent },
-    ],
-  },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'contacts', component: ContactsComponent },
-  { path: 'speakers', component: SpeakersComponent },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: '**', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
 
 @NgModule({

@@ -9,27 +9,28 @@
           <div class="d-flex align-self-center pt-3">
             <a>
               <img
-              src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRbezqZpEuwGSvitKy3wrwnth5kysKdRqBW54cAszm_wiutku3R"
-              name="aboutme" width="120" height="120" class="rounded-circle">
+                src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRbezqZpEuwGSvitKy3wrwnth5kysKdRqBW54cAszm_wiutku3R"
+                name="aboutme"
+                width="120"
+                height="120"
+                class="rounded-circle"
+              />
             </a>
           </div>
           <div class="card-body">
-            <div class="h4 text-center mb-3">@UserName</div>
-            <div class="h7 text-bold pb-1"><b>Nome:</b> Miracles Lee Cross</div>
-            <div class="h7">
-              Developer of web applications, JavaScript, PHP, Java, Python, Ruby, Java, Node.js,
-              etc.
-            </div>
+            <div class="h4 text-center mb-3">{{ controls.userName.value }}</div>
+            <div class="h7 text-bold pb-1"><b>Nome:</b> {{ fullName }}</div>
+            <div class="h7">{{ controls.description.value }}</div>
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <div class="row">
                 <div class="col-6 text-center border-right">
-                  <div class="h5">1342</div>
-                  <div class="h6 text-muted">Eventos Ministrados</div>
+                  <div class="h5">0</div>
+                  <div class="h6 text-muted">Meus Eventos</div>
                 </div>
                 <div class="col-6 text-center">
-                  <div class="h5">1342</div>
+                  <div class="h5">0</div>
                   <div class="h6 text-muted">Eventos Participados</div>
                 </div>
               </div>
@@ -45,20 +46,19 @@
           </div>
           <div class="form-group col">
             <label>Título</label>
-            <select formControlName="title"
+            <select
+              formControlName="title"
               [ngClass]="cssValidator(controls.title)"
-              class="form-control">
-              <option value=""></option>
-              <option value="0">Não Quero</option>
-              <option value="Senhorita">Tecnólogo(a)</option>
-              <option value="Senhorita">Bacharel</option>
-              <option value="Senhorita">Especialista</option>
-              <option value="Senhorita">Pós Graduado(a)</option>
-              <option value="Senhorita">Mestre</option>
-              <option value="Senhorita">Doutor(a)</option>
-              <option value="Senhorita">Pós Doc</option>
+              class="form-control"
+            >
+              <option *ngFor="let title of titles" value="{{ title }}">
+                {{ title }}
+              </option>
             </select>
-            <div *ngIf="controls.title?.errors?.required" class="invalid-feedback">
+            <div
+              *ngIf="controls.title?.errors?.required"
+              class="invalid-feedback"
+            >
               Título é obrigatório.
             </div>
           </div>
@@ -68,8 +68,12 @@
               type="text"
               formControlName="firstName"
               [ngClass]="cssValidator(controls.firstName)"
-              class="form-control"/>
-            <div *ngIf="controls.firstName?.errors?.required" class="invalid-feedback">
+              class="form-control"
+            />
+            <div
+              *ngIf="controls.firstName?.errors?.required"
+              class="invalid-feedback"
+            >
               Primeiro Nome é obrigatório.
             </div>
           </div>
@@ -79,11 +83,14 @@
               type="text"
               formControlName="lastName"
               [ngClass]="cssValidator(controls.lastName)"
-              class="form-control"/>
-            <div *ngIf="controls.lastName?.errors?.required" class="invalid-feedback">
+              class="form-control"
+            />
+            <div
+              *ngIf="controls.lastName?.errors?.required"
+              class="invalid-feedback"
+            >
               Último Nome é obrigatório.
             </div>
-
           </div>
         </div>
         <div class="form-row">
@@ -93,8 +100,12 @@
               type="text"
               formControlName="email"
               [ngClass]="cssValidator(controls.email)"
-              class="form-control" />
-            <div *ngIf="controls.email?.errors?.required" class="invalid-feedback">
+              class="form-control"
+            />
+            <div
+              *ngIf="controls.email?.errors?.required"
+              class="invalid-feedback"
+            >
               E-mail é obrigatório.
             </div>
             <div *ngIf="controls.email?.errors?.email" class="invalid-feedback">
@@ -105,37 +116,51 @@
             <label>Telefone</label>
             <input
               type="text"
-              formControlName="phone"
-              [ngClass]="cssValidator(controls.phone)"
-              class="form-control" />
-            <div *ngIf="controls.phone?.errors?.required" class="invalid-feedback">
+              formControlName="phoneNumber"
+              [ngClass]="cssValidator(controls.phoneNumber)"
+              class="form-control"
+            />
+            <div
+              *ngIf="controls.phoneNumber?.errors?.required"
+              class="invalid-feedback"
+            >
               Telefone é obrigatório.
             </div>
           </div>
           <div class="form-group col-sm">
             <label>Função</label>
-            <select formControlName="function"
+            <select
+              formControlName="function"
               [ngClass]="cssValidator(controls.function)"
-              class="form-control">
-              <option value=""></option>
-              <option value="Participante">Participante</option>
-              <option value="Palestrante">Palestrante</option>
+              class="form-control"
+            >
+              <option *ngFor="let func of functions" value="{{ func }}">
+                {{ func }}
+              </option>
             </select>
-            <div *ngIf="controls.function?.errors?.required" class="invalid-feedback">
+            <div
+              *ngIf="controls.function?.errors?.required"
+              class="invalid-feedback"
+            >
               Função é obrigatório.
             </div>
           </div>
-          <form-group class="col-12">
+          <div class="form-group col-12">
             <label>Descrição</label>
             <input
               type="text"
+              autocomplete="off"
               formControlName="description"
               [ngClass]="cssValidator(controls.description)"
-              class="form-control" />
-            <div *ngIf="controls.description?.errors?.required" class="invalid-feedback">
+              class="form-control"
+            />
+            <div
+              *ngIf="controls.description?.errors?.required"
+              class="invalid-feedback"
+            >
               Descrição é obrigatório.
             </div>
-          </form-group>
+          </div>
         </div>
         <div>
           <h3 class="pt-3 border-bottom">Mudar Senha</h3>
@@ -148,11 +173,18 @@
               type="password"
               formControlName="password"
               [ngClass]="cssValidator(controls.password)"
-              class="form-control" />
-            <div *ngIf="controls.password?.errors?.required" class="invalid-feedback">
+              class="form-control"
+            />
+            <div
+              *ngIf="controls.password?.errors?.required"
+              class="invalid-feedback"
+            >
               Senha é obrigatório.
             </div>
-            <div *ngIf="controls.password?.errors?.minlength" class="invalid-feedback">
+            <div
+              *ngIf="controls.password?.errors?.minlength"
+              class="invalid-feedback"
+            >
               Senha deve conter no máximo 6 caracteres.
             </div>
           </div>
@@ -162,11 +194,18 @@
               type="password"
               formControlName="confirmPassword"
               [ngClass]="cssValidator(controls.confirmPassword)"
-              class="form-control" />
-            <div *ngIf="controls.confirmPassword?.errors?.required" class="invalid-feedback">
+              class="form-control"
+            />
+            <div
+              *ngIf="controls.confirmPassword?.errors?.required"
+              class="invalid-feedback"
+            >
               Confirmar Senha é obrigatório.
             </div>
-            <div *ngIf="controls.confirmPassword?.errors?.mustMatch" class="invalid-feedback">
+            <div
+              *ngIf="controls.confirmPassword?.errors?.mustMatch"
+              class="invalid-feedback"
+            >
               Confirmar Senha deve ser idêntico a Senha.
             </div>
           </div>
@@ -181,7 +220,7 @@
         >
           Cancelar Alteração
         </button>
-        <button class="btn btn-success" [disabled]="!form.valid">
+        <button type="submit" class="btn btn-success" [disabled]="!form.valid">
           <!-- <span class="spinner-border spinner-border-sm mr-1"></span> -->
           Salvar Alteração
         </button>

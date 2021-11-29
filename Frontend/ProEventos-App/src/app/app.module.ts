@@ -1,6 +1,6 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -31,6 +31,9 @@ import { UserComponent } from './components/user/user.component';
 import { LoginComponent } from './components/user/login/login.component';
 import { RegisterComponent } from './components/user/register/register.component';
 import { BatchService } from './services/batch.service';
+import { AccountService } from './services/account.service';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { HomeComponent } from './components/home/home.component';
 
 defineLocale('pt-br', ptBrLocale);
 @NgModule({
@@ -49,6 +52,7 @@ defineLocale('pt-br', ptBrLocale);
     UserComponent,
     LoginComponent,
     RegisterComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,8 +75,12 @@ defineLocale('pt-br', ptBrLocale);
     BsDatepickerModule.forRoot(),
     NgxCurrencyModule,
   ],
-  providers: [EventService, BatchService],
+  providers: [
+    EventService,
+    BatchService,
+    AccountService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

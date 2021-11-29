@@ -114,7 +114,7 @@ export class EventListComponent implements OnInit {
         },
         (error: any) => {
           console.log(error);
-          this.toastrService.error(`Detalhes: ${error.message}`, 'Erro!');
+          this.toastrService.error(`Detalhes: ${error.error}`, 'Erro!');
         },
       )
       .add(() => this.spinner.hide());

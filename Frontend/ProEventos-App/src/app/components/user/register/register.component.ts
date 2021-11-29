@@ -6,7 +6,12 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 import { ValidatorField } from 'src/app/helpers/validator-field';
+import { User } from 'src/app/models/Identity/User';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-register',
@@ -14,13 +19,20 @@ import { ValidatorField } from 'src/app/helpers/validator-field';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
+  user = {} as User;
   form!: FormGroup;
 
   get controls(): any {
     return this.form.controls;
   }
 
-  constructor(private readonly formBuilder: FormBuilder) {}
+  constructor(
+    private readonly router: Router,
+    private readonly formBuilder: FormBuilder,
+    private readonly accountService: AccountService,
+    private readonly toastr: ToastrService,
+    private readonly spinner: NgxSpinnerService,
+  ) {}
 
   ngOnInit() {
     this._validation();
@@ -46,5 +58,19 @@ export class RegisterComponent implements OnInit {
 
   cssValidator(control: FormControl) {
     return { 'is-invalid': control?.errors && control?.touched };
+  }
+
+  public register(): void {
+    this.spinner.show();
+
+    this.user = { ...this.form.value };
+    this.accountService
+      .register(this.user)
+      .subscribe(
+        () => this.router.navigateByUrl('/dashboard'),
+        (error: any) =>
+          this.toastr.error(`Details: ${error.error}`, 'Error!'),
+      )
+      .add(() => this.spinner.hide());
   }
 }

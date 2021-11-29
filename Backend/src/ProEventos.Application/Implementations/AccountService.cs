@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProEventos.Application.Contracts;
 using ProEventos.Application.Dtos;
+using ProEventos.Domain.Enum;
 using ProEventos.Domain.Identity;
 using ProEventos.Persistence.Contracts;
 
@@ -73,7 +74,7 @@ namespace ProEventos.Application.Implementations
             }
         }
 
-        public async Task<UserDto> CreateAccount(UserDto userDto)
+        public async Task<UserUpdateDto> CreateAccount(UserDto userDto)
         {
             try
             {
@@ -82,7 +83,7 @@ namespace ProEventos.Application.Implementations
 
                 if (result.Succeeded)
                 {
-                    var userToReturn = this.Mapper.Map<UserDto>(user);
+                    var userToReturn = this.Mapper.Map<UserUpdateDto>(user);
                     return userToReturn;
                 }
 
@@ -102,13 +103,17 @@ namespace ProEventos.Application.Implementations
                     .GetUserByUsernameAsync(userDto.UserName);
                 if (user == null) return null;
 
+                userDto.Id = user.Id;
+
                 this.Mapper.Map(userDto, user);
 
-                var token = await this.UserManager
-                    .GeneratePasswordResetTokenAsync(user);
+                if(!String.IsNullOrEmpty(userDto.Password)) {
+                    var token = await this.UserManager
+                        .GeneratePasswordResetTokenAsync(user);
 
-                var result = await this.UserManager
-                    .ResetPasswordAsync(user, token, userDto.Password);
+                    await this.UserManager
+                        .ResetPasswordAsync(user, token, userDto.Password);
+                }
 
                 this.UserPersist.Update<User>(user);
 
@@ -124,6 +129,16 @@ namespace ProEventos.Application.Implementations
             {
                 throw new Exception($"Error Details: {ex.Message}");
             }
+        }
+
+        public IEnumerable<string> GetAvailableTitles()
+        {
+            return Enum.GetNames(typeof (Title)).ToList();
+        }
+
+        public IEnumerable<string> GetAvailableFunctions()
+        {
+            return Enum.GetNames(typeof (Function)).ToList();
         }
     }
 }

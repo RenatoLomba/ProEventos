@@ -170,7 +170,7 @@ export class EventDetailComponent implements OnInit {
       },
       error: (error: any) => {
         this.spinner.hide();
-        this.toastr.error(`Detalhes: ${error.message}`, 'Erro');
+        this.toastr.error(`Detalhes: ${error.error}`, 'Erro');
         console.log(error);
       },
       complete: () => this.spinner.hide(),
@@ -200,7 +200,7 @@ export class EventDetailComponent implements OnInit {
         },
         (error: any) => {
           console.log(error);
-          this.toastr.error(`Detalhes: ${error.message}`, 'Erro!');
+          this.toastr.error(`Detalhes: ${error.error}`, 'Erro!');
         },
       )
       .add(() => this.spinner.hide());
@@ -219,7 +219,7 @@ export class EventDetailComponent implements OnInit {
         },
         (error: any) => {
           console.log(error);
-          this.toastr.error(`Detalhes: ${error.message}`, 'Error!');
+          this.toastr.error(`Detalhes: ${error.error}`, 'Error!');
         },
       )
       .add(() => this.spinner.hide());
@@ -257,7 +257,7 @@ export class EventDetailComponent implements OnInit {
         },
         (error: any) => {
           console.log(error);
-          this.toastr.error(`Detalhes: ${error.message}`, 'Error!');
+          this.toastr.error(`Detalhes: ${error.error}`, 'Error!');
         },
       )
       .add(() => this.spinner.hide());
@@ -294,7 +294,7 @@ export class EventDetailComponent implements OnInit {
         },
         (error: any) => {
           console.log(error);
-          this.toastr.error(`Detalhes: ${error.message}`, 'Error!');
+          this.toastr.error(`Detalhes: ${error.error}`, 'Error!');
         },
       )
       .add(() => this.spinner.hide());

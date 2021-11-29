@@ -82,7 +82,11 @@ namespace ProEventos.API.Controllers
                 var user = await this._accountService.CreateAccount(userDto);
 
                 if(user != null) {
-                    return StatusCode(StatusCodes.Status201Created, user);
+                    return StatusCode(StatusCodes.Status201Created, new {
+                        userName = user.UserName,
+                        firstName = user.FirstName,
+                        token = this._tokenService.CreateToken(user).Result
+                    });
                 }
 
                 return BadRequest($"User not created, try again.");
@@ -98,8 +102,14 @@ namespace ProEventos.API.Controllers
         public async Task<IActionResult> UpdateUser(UserUpdateDto userUpdateDto) {
             try
             {
+                string username = User.GetUserName();
+
+                if(userUpdateDto.UserName != username) {
+                    return Unauthorized("Invalid User");
+                }
+
                 var user = await this._accountService
-                    .GetUserByUsername(User.GetUserName());
+                    .GetUserByUsername(username);
 
                 if(user == null) return BadRequest($"Invalid User.");
 
@@ -108,13 +118,29 @@ namespace ProEventos.API.Controllers
 
                 if(userReturn == null) return NoContent();
 
-                return Ok(userReturn);
+                return Ok(new {
+                    userName = userReturn.UserName,
+                    firstName = userReturn.FirstName,
+                    token = this._tokenService.CreateToken(userReturn).Result
+                });
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     ex.Message);
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetTitles() {
+            var titlesList = _accountService.GetAvailableTitles();
+            return Ok(titlesList);
+        }
+
+        [HttpGet]
+        public IActionResult GetFunctions() {
+            var functionsList = _accountService.GetAvailableFunctions();
+            return Ok(functionsList);
         }
     }
 }

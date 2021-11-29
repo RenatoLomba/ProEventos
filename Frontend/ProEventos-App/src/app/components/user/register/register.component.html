@@ -1,18 +1,18 @@
 <div class="row mt-4">
-	<div class="col-md-6 d-none d-md-block" style="height: 450px;">
-		<div class="text-center col-md-12 my-auto side-heder">
-			<h1>Cadastro de Usuário</h1>
-			<img
+  <div class="col-md-6 d-none d-md-block" style="height: 450px">
+    <div class="text-center col-md-12 my-auto side-heder">
+      <h1>Cadastro de Usuário</h1>
+      <img
         src="../../../../assets/registerImage.png"
         class="my-4"
         alt="Registrar-se"
-        width="400px">
-		</div>
-	</div>
+        width="400px"
+      />
+    </div>
+  </div>
 
-	<div class="col-md-6">
-
-		<form [formGroup]="form" class="p-1">
+  <div class="col-md-6">
+    <form [formGroup]="form" class="p-1" (ngSubmit)="register()">
       <div class="pb-2 d-block d-md-none">
         <h3 class="border-bottom">Cadastro de Usuário</h3>
       </div>
@@ -24,8 +24,12 @@
             class="form-control"
             placeholder="Insira o Primeiro nome"
             formControlName="firstName"
-            [ngClass]="cssValidator(controls.firstName)" />
-          <div *ngIf="controls.firstName?.errors?.required" class="invalid-feedback">
+            [ngClass]="cssValidator(controls.firstName)"
+          />
+          <div
+            *ngIf="controls.firstName?.errors?.required"
+            class="invalid-feedback"
+          >
             Primeiro Nome é obrigatório.
           </div>
         </div>
@@ -36,19 +40,25 @@
             class="form-control"
             placeholder="Insira o Último nome"
             formControlName="lastName"
-            [ngClass]="cssValidator(controls.lastName)" />
-          <div *ngIf="controls.lastName?.errors?.required" class="invalid-feedback">
+            [ngClass]="cssValidator(controls.lastName)"
+          />
+          <div
+            *ngIf="controls.lastName?.errors?.required"
+            class="invalid-feedback"
+          >
             Último Nome é obrigatório.
           </div>
         </div>
       </div>
       <div class="form-group">
         <label for="">E-mail:</label>
-        <input class="form-control"
+        <input
+          class="form-control"
           type="text"
           placeholder="Insira o e-mail"
           formControlName="email"
-          [ngClass]="cssValidator(controls.email)" />
+          [ngClass]="cssValidator(controls.email)"
+        />
         <div *ngIf="controls.email?.errors?.required" class="invalid-feedback">
           Email é obrigatório.
         </div>
@@ -58,48 +68,73 @@
       </div>
       <div class="form-group">
         <label for="">Usuario:</label>
-        <input class="form-control"
+        <input
+          class="form-control"
           type="text"
           placeholder="Insira o nome de Usuário"
           formControlName="userName"
-          [ngClass]="cssValidator(controls.userName)" />
-        <div *ngIf="controls.userName?.errors?.required" class="invalid-feedback">
+          [ngClass]="cssValidator(controls.userName)"
+        />
+        <div
+          *ngIf="controls.userName?.errors?.required"
+          class="invalid-feedback"
+        >
           Usuário é obrigatório.
         </div>
       </div>
       <div class="form-row">
         <div class="form-group col-sm-6">
           <label for="">Senha:</label>
-          <input class="form-control"
+          <input
+            class="form-control"
             type="password"
             placeholder="Digite uma Senha"
             formControlName="password"
-            [ngClass]="cssValidator(controls.password)" />
-          <div *ngIf="controls.password?.errors?.required" class="invalid-feedback">
+            [ngClass]="cssValidator(controls.password)"
+          />
+          <div
+            *ngIf="controls.password?.errors?.required"
+            class="invalid-feedback"
+          >
             Senha é obrigatório.
           </div>
-          <div *ngIf="controls.password?.errors?.minlength" class="invalid-feedback">
+          <div
+            *ngIf="controls.password?.errors?.minlength"
+            class="invalid-feedback"
+          >
             Senha deve ter no mínimo 6 caracteres.
           </div>
         </div>
         <div class="form-group col-sm-6">
           <label for="">Confirmar Senha:</label>
-          <input class="form-control"
+          <input
+            class="form-control"
             type="password"
             placeholder="Confirme a Senha"
             formControlName="confirmPassword"
-            [ngClass]="cssValidator(controls.confirmPassword)" />
-          <div *ngIf="controls.confirmPassword?.errors?.required" class="invalid-feedback">
+            [ngClass]="cssValidator(controls.confirmPassword)"
+          />
+          <div
+            *ngIf="controls.confirmPassword?.errors?.required"
+            class="invalid-feedback"
+          >
             Confirmar Senha é obrigatório.
           </div>
-          <div *ngIf="controls.confirmPassword?.errors?.mustMatch" class="invalid-feedback">
+          <div
+            *ngIf="controls.confirmPassword?.errors?.mustMatch"
+            class="invalid-feedback"
+          >
             Confirmar Senha deve ser igual Senha.
           </div>
         </div>
       </div>
       <div class="form-row p-1 mb-3">
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="customCheck1">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="customCheck1"
+          />
           <label class="custom-control-label">
             Eu concordo com os <a href="#">Termos de Uso</a>.
           </label>
@@ -108,8 +143,10 @@
       <div class="form-row">
         <div class="form-group col-12">
           <button
+            type="submit"
             [disabled]="!form.valid"
-            class="btn btn-lg btn-success btn-block px-5">
+            class="btn btn-lg btn-success btn-block px-5"
+          >
             Registar
           </button>
         </div>
@@ -122,6 +159,5 @@
         </div>
       </div>
     </form>
-
-	</div>
+  </div>
 </div>

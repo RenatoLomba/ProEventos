@@ -179,6 +179,8 @@ namespace ProEventos.API.Controllers
         [NonAction]
         private void DeleteImage(string imageUri)
         {
+            if(String.IsNullOrEmpty(imageUri)) return;
+            
             var imagePath = Path.Combine(
                 this._env.ContentRootPath, @"Resources/Images", imageUri
             );

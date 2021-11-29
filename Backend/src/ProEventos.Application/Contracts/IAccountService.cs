@@ -12,7 +12,10 @@ namespace ProEventos.Application.Contracts
         Task<bool> UserExists(string username);
         Task<UserUpdateDto> GetUserByUsername(string username);
         Task<SignInResult> CheckUserPassword(UserUpdateDto userDto, string password);
-        Task<UserDto> CreateAccount(UserDto userDto);
+        Task<UserUpdateDto> CreateAccount(UserDto userDto);
         Task<UserUpdateDto> UpdateAccount(UserUpdateDto userDto);
+
+        IEnumerable<string> GetAvailableTitles();
+        IEnumerable<string> GetAvailableFunctions();
     }
 }
