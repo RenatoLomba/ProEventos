@@ -92,7 +92,7 @@
     </tfoot>
   </table>
 
-  <div class="d-flex justify-content-center">
+  <div class="d-flex justify-content-between">
     <pagination
       [boundaryLinks]="true"
       (pageChanged)="pageChanged($event)"
@@ -106,6 +106,19 @@
       lastText="&raquo;"
     >
     </pagination>
+
+    <div class="d-flex">
+      <label>Itens: </label>
+      <select
+        [(ngModel)]="pagination.itemsPerPage"
+        class="form-control ml-3"
+        (input)="onChangeItemsPerPage($event)"
+      >
+        <option *ngFor="let item of itemsSelect" value="{{ item }}">
+          {{ item }}
+        </option>
+      </select>
+    </div>
   </div>
 </div>
 

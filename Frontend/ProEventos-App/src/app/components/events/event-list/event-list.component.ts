@@ -28,6 +28,8 @@ export class EventListComponent implements OnInit, OnDestroy {
   pagination = {} as Pagination;
   filterParam = '';
 
+  itemsSelect = [1, 2, 3, 4, 5];
+
   private _getEventsSubscription: Subscription | null = null;
   private _filterParamChanged = new Subject<string>();
 
@@ -93,6 +95,11 @@ export class EventListComponent implements OnInit, OnDestroy {
     }
 
     this._filterParamChanged.next(this.filterParam);
+  }
+
+  public onChangeItemsPerPage(event: any) {
+    this.pagination.itemsPerPage = event.target.value;
+    this.getEvents(this.filterParam);
   }
 
   public openModal(
