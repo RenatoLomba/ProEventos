@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProEventos.API.Extensions;
 using ProEventos.Application.Contracts;
 using ProEventos.Application.Dtos;
+using ProEventos.Persistence.Models;
 
 namespace ProEventos.API.Controllers
 {
@@ -34,23 +35,19 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string theme = null)
+        public async Task<IActionResult> Get([FromQuery] PageParams pageParams)
         {
             try
             {
-                EventDto[] evnts = null;
-
-                if (!String.IsNullOrEmpty(theme))
-                {
-                    evnts = await this._eventService.GetEventsByTheme(
-                        this.userId, theme, true);
-                }
-                else
-                {
-                    evnts = await this._eventService.GetEvents(this.userId, true);
-                }
+                var evnts = await this._eventService.GetEvents(this.userId, 
+                    pageParams, true);
 
                 if (evnts == null) return NoContent();
+
+                Response.AddPagination(
+                    evnts.CurrentPage, evnts.PageSize, 
+                    evnts.TotalCount, evnts.TotalPages
+                );
 
                 return Ok(evnts);
             }

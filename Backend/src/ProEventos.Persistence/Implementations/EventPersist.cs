@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProEventos.Domain;
 using ProEventos.Persistence.Contexts;
 using ProEventos.Persistence.Contracts;
+using ProEventos.Persistence.Models;
 
 namespace ProEventos.Persistence.Implementations
 {
@@ -16,8 +17,8 @@ namespace ProEventos.Persistence.Implementations
             this._context = context;
         }
 
-        public async Task<Event[]> GetEventsAsync(int userId, 
-            bool includeSpeakers = false)
+        public async Task<PageList<Event>> GetEventsAsync(int userId, 
+            PageParams pageParams, bool includeSpeakers = false)
         {
             IQueryable<Event> query = _context.Events
                 .Include(ev => ev.Batches)
@@ -32,33 +33,15 @@ namespace ProEventos.Persistence.Implementations
 
             query = query.AsNoTracking()
                 .Where(ev => ev.UserId.Equals(userId))
+                .Where(ev => 
+                    ev.Theme.ToLower().Contains(pageParams.Term.ToLower()) ||
+                    ev.Place.ToLower().Contains(pageParams.Term.ToLower()))
                 .OrderBy(ev => ev.Id);
 
-            return await query.ToArrayAsync();
-        }
+            var pageNumber = pageParams.PageNumber;
+            var pageSize = pageParams.PageSize;
 
-        public async Task<Event[]> GetEventsByThemeAsync(int userId, 
-            string theme, bool includeSpeakers = false)
-        {
-            IQueryable<Event> query = _context.Events
-                .Include(ev => ev.Batches)
-                .Include(ev => ev.SocialNetworks);
-
-            if (includeSpeakers)
-            {
-                query = query
-                    .Include(ev => ev.SpeakersEvents)
-                    .ThenInclude(se => se.Speaker);
-            }
-
-            query = query
-                .AsNoTracking()
-                .OrderBy(ev => ev.Id)
-                .Where(ev => 
-                    ev.Theme.ToLower().Contains(theme.ToLower()) && 
-                    ev.UserId.Equals(userId));
-
-            return await query.ToArrayAsync();
+            return await PageList<Event>.CreateAsync(query, pageNumber, pageSize);
         }
 
         public async Task<Event> GetEventByIdAsync(int userId, 

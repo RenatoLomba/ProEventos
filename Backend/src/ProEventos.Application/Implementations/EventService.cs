@@ -5,6 +5,7 @@ using ProEventos.Application.Contracts;
 using ProEventos.Application.Dtos;
 using ProEventos.Domain;
 using ProEventos.Persistence.Contracts;
+using ProEventos.Persistence.Models;
 
 namespace ProEventos.Application.Implementations
 {
@@ -22,6 +23,44 @@ namespace ProEventos.Application.Implementations
             this._eventPersist = eventPersist;
             this._generalPersist = generalPersist;
             this._mapper = mapper;
+        }
+
+        public async Task<PageList<EventDto>> GetEvents(int userId, PageParams pageParams,
+            bool includeSpeakers = false)
+        {
+            try
+            {
+                var events = await this._eventPersist.GetEventsAsync(
+                    userId, pageParams, includeSpeakers);
+
+                var result = this._mapper.Map<PageList<EventDto>>(events);
+                result.CurrentPage = events.CurrentPage;
+                result.PageSize = events.PageSize;
+                result.TotalCount = events.TotalCount;
+                result.TotalPages = events.TotalPages;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<EventDto> GetEventById(int userId, 
+            int id, bool includeSpeakers = false)
+        {
+            try
+            {
+                return this._mapper.Map<EventDto>(
+                    await this._eventPersist.GetEventByIdAsync(
+                        userId, id, includeSpeakers)
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<EventDto> AddEvent(int userId, EventDto model)
@@ -89,53 +128,6 @@ namespace ProEventos.Application.Implementations
 
                 this._generalPersist.Delete(evnt);
                 return await this._generalPersist.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<EventDto[]> GetEvents(int userId, 
-            bool includeSpeakers = false)
-        {
-            try
-            {
-                var result = await this._eventPersist.GetEventsAsync(
-                    userId, includeSpeakers);
-                return this._mapper.Map<EventDto[]>(result);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<EventDto> GetEventById(int userId, 
-            int id, bool includeSpeakers = false)
-        {
-            try
-            {
-                return this._mapper.Map<EventDto>(
-                    await this._eventPersist.GetEventByIdAsync(
-                        userId, id, includeSpeakers)
-                );
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<EventDto[]> GetEventsByTheme(int userId, 
-            string theme, bool includeSpeakers = false)
-        {
-            try
-            {
-                return this._mapper.Map<EventDto[]>(
-                    await this._eventPersist.GetEventsByThemeAsync(
-                        userId, theme, includeSpeakers)
-                );
             }
             catch (Exception ex)
             {
